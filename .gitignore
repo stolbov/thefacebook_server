@@ -1,0 +1,14 @@
+node_modules/
+options.js
+npm-debug.log
+_error_log.log
+app_log.log
+child-0.pid
+child-err-0.log
+child-out-0.log
+log.txt
+build/
+.idea/
+.c9/
+layersData/
+files/
