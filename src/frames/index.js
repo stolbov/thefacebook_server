@@ -79,18 +79,25 @@ module.exports = function (farmeId, callback) {
               async.each(
                 fileList,
                 function (fileId, next) {
-                  fs.readFile(
-                    options.DATA_ROOT + options.OBJECTS_META_FOLDER + fileId + '.json',
-                    function (err, data) {
-                      var parseData = JSON.parse(data);
-                      if (!err) {
-                        HTML2 += '<tr><td>' + fileId + '</td>';
-                        HTML2 += '<td><a href="/' + parseData.start_frame + '">' + parseData.start_frame + '</a></td>';
-                        HTML2 += '<td><a href="/' + parseData.last_frame + '">' + parseData.last_frame + '</td></tr>';
+                  try {
+                    fs.readFile(
+                      options.DATA_ROOT + options.OBJECTS_META_FOLDER + fileId + '.json',
+                      function (err, data) {
+                        if (err) {
+                          HTML2 += '<tr><td colspan="3"><i>Нет данных по объекту</i></td></tr>';
+                        } else {
+                          var parseData = JSON.parse(data);
+                          HTML2 += '<tr><td>' + fileId + '</td>';
+                          HTML2 += '<td><a href="/' + parseData.start_frame + '">' + parseData.start_frame + '</a></td>';
+                          HTML2 += '<td><a href="/' + parseData.last_frame + '">' + parseData.last_frame + '</td></tr>';
+                        }
+                        next(null);
                       }
-                      next(null);
-                    }
-                  );
+                    );
+                  } catch (e) {
+                    HTML2 += '<tr><td colspan="3"><i>Нет данных по объекту</i></td></tr>';
+                    next(null);
+                  }
                 },
                 function (err) {
                   HTML2 += '</tbody></table>';
