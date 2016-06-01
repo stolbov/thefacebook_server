@@ -33,14 +33,15 @@ module.exports = function (farmeId, callback) {
         fs.readFile(
           options.DATA_ROOT + options.FRAMES_FOLDER + farmeId + '.jpg',
           function(err, data) {
-            if (!err) {
+            if (err) {
+              html += '<div style="color: red; font-size: 16px; font-weight: bold;">Отсутствует кадр</div>';
+            } else {
               html += '<div style="position: relative;"><div><img src="data:image/jpeg;base64,' + new Buffer(data).toString('base64') + '"></div>';
             }
             next(null, html);
           }
         );
       } catch (e) {
-        console.log(e);
         next(e, html);
       }
     },
@@ -50,7 +51,10 @@ module.exports = function (farmeId, callback) {
         fs.readFile(
           options.DATA_ROOT + options.FRAMES_META_FOLDER + farmeId + '.json',
           function (err, data) {
-            if (!err) {
+            if (err) {
+              html += '<div style="color: red; font-size: 16px; font-weight: bold;">Отсутствует файл данных</div>';
+              next(null, html);
+            } else {
               var parseData = JSON.parse(data);
               var HTML2 = '';
               HTML2 += '<div><b>Frame: </b>' + parseData.name + '</div><br>';
